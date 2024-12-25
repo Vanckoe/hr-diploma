@@ -8,7 +8,7 @@ export default function Home() {
 
     return (
         <div>
-            <h1 className="text-2xl">
+            <h1 className="text-2xl text-black">
                 Empty project
                 <FileIcon width={150} height={150} color="red" />
                 {user?.name}
