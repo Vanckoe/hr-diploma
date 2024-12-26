@@ -7,7 +7,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="container mx-auto px-7">
+        <div className="container relative mx-auto px-7">
             {children}
             <Footer />
         </div>
