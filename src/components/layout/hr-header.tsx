@@ -7,14 +7,14 @@ import Logo from '@/assets/icons/Logo';
 const HrHeader = () => {
     return (
         <div className="mb-10 flex w-full flex-row items-center justify-between">
-            <div className="flex flex-row items-center gap-5">
+            <div className="flex w-full flex-row items-center gap-5">
                 <Input
-                    className="w-[400px] rounded-[40px]"
+                    className="w-[400px] !rounded-[40px]"
                     iconLeft={<Search />}
                     label="Поиск вакансий или кандидата"
                 />
                 <Link
-                    href={'#!'}
+                    href={'/hr/vacancy'}
                     className="flex flex-row items-center gap-2 rounded-[40px] bg-[#814BFF] px-9 py-5 text-white"
                 >
                     <Add />
