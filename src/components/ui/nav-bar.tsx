@@ -20,7 +20,7 @@ const Sidebar = () => {
                 {/* Menu */}
 
                 <nav className="mt-10 flex flex-col items-center justify-center gap-2 pl-6">
-                    <NavItem href="#!" icon={<Home color="#814BFF" />} text="Главная" />
+                    <NavItem href="/hr" icon={<Home color="#814BFF" />} text="Главная" />
                     <NavItem href="#!" icon={<Mail color="#814BFF" />} text="Архив вакансий" />
                     <NavItem href="#!" icon={<TablePaper color="#814BFF" />} text="Вакансии" />
                     <NavItem href="#!" icon={<User color="#814BFF" />} text="Кандидаты" />
@@ -42,19 +42,3 @@ const NavItem = ({ href, icon, text }: { href: string; icon: React.ReactNode; te
 };
 
 export default Sidebar;
-
-// <NavItem href="/main/profile" icon={<div className="flex w-8 items-center justify-center"><User color="white" />   </div>} text="Мой профиль" />
-// <NavItem href="/main" icon={<div className="flex w-8 items-center justify-center"><Home color="white" />   </div>} text="Главная" />
-// <NavItem href="/main/quests" icon={<div className="flex w-8 items-center justify-center"><Quest color="white" />  </div>} text="Мои квесты" />
-// <NavItem href="/main/my-courses" icon={<div className="flex w-8 items-center justify-center"><Subject color="white" /></div>} text="Предметы" />
-// <NavItem href="/main/statistics" icon={<div className="flex w-8 items-center justify-center"><Stat color="white" />   </div>} text="Статистика" />
-// <NavItem href="/main/ent" icon={<div className="flex w-8 items-center justify-center"><Ent />                  </div>} text="Пробное ЕНТ" />
-// <NavItem href="/main/leaderboard" icon={<div className="flex w-8 items-center justify-center"><Leader color="white" /> </div>} text="Лидерборд" />
-
-// <NavItem href="/main/profile" icon={<div className="flex w-8 items-center justify-center"><User color="white" />   </div>} text={t('my_profile')} />
-// <NavItem href="/main" icon={<div className="flex w-8 items-center justify-center"><Home color="white" />   </div>} text={t('home')} />
-// <NavItem href="/main/error" icon={<div className="flex w-8 items-center justify-center"><Quest color="white" />  </div>} text={t('my_quests')} />
-// <NavItem href="/main/my-courses" icon={<div className="flex w-8 items-center justify-center"><Subject color="white" /></div>} text={t('subjects')} />
-// <NavItem href="/main/error" icon={<div className="flex w-8 items-center justify-center"><Stat color="white" />   </div>} text={t('statistics')} />
-// <NavItem href="/main/ent" icon={<div className="flex w-8 items-center justify-center"><Ent />                  </div>} text={t('trial_ent')} />
-// <NavItem href="/main/leaderboard" icon={<div className="flex w-8 items-center justify-center"><Leader color="white" /> </div>} text={t('leaderboard')} />

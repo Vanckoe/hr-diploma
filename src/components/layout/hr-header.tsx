@@ -4,6 +4,7 @@ import Search from '@/assets/icons/hr/Search';
 import Link from 'next/link';
 import Add from '@/assets/icons/hr/Add';
 import Logo from '@/assets/icons/Logo';
+
 const HrHeader = () => {
     return (
         <div className="mb-10 flex w-full flex-row items-center justify-between">
