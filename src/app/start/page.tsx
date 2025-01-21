@@ -44,7 +44,7 @@ const Star = () => {
                     Я ищу сотрудников
                 </Link>
                 <Link
-                    href={'#!'}
+                    href={'/start/getJob'}
                     className="rounded-md border border-[#814BFF] bg-white p-5 text-[#814BFF]"
                 >
                     Я ищу сотрудников
