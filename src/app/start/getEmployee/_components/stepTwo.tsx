@@ -7,26 +7,101 @@ import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
 import LinkIcon from '@/assets/icons/Link';
 
-const StepTwo = () => {
-    const [description, setDescription] = useState('');
-    const [file, setFile] = useState<File | null>(null);
+interface ICompanyFormData {
+    companyName: string;
+    industry: string;
+    description: string;
+    logo: File | null;
+}
 
-    const router = useRouter(); // Инициализация роутера
+interface ICompanyFormErrors {
+    companyName: string;
+    industry: string;
+    description: string;
+    logo: string;
+}
+
+interface StepTwoProps {
+    onSubmit: (data: ICompanyFormData) => void;
+    formData: {
+        name: string;
+        phone: string;
+        password: string;
+        confirmPassword: string;
+    };
+}
+
+const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
+    const router = useRouter();
+    const [companyData, setCompanyData] = useState<ICompanyFormData>({
+        companyName: '',
+        industry: '',
+        description: '',
+        logo: null,
+    });
+
+    const [errors, setErrors] = useState<ICompanyFormErrors>({
+        companyName: '',
+        industry: '',
+        description: '',
+        logo: '',
+    });
+
+    const handleInputChange = (field: keyof ICompanyFormData, value: string | File | null) => {
+        setCompanyData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+        setErrors((prev) => ({
+            ...prev,
+            [field]: '',
+        }));
+    };
 
     const handleFileChange = (selectedFile: File | null) => {
-        setFile(selectedFile);
-        console.log('Выбранный файл:', selectedFile);
+        handleInputChange('logo', selectedFile);
+    };
+
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {
+            companyName: '',
+            industry: '',
+            description: '',
+            logo: '',
+        };
+
+        if (!companyData.companyName.trim()) {
+            newErrors.companyName = 'Пожалуйста, введите название компании';
+            isValid = false;
+        }
+
+        if (!companyData.industry.trim()) {
+            newErrors.industry = 'Пожалуйста, укажите сферу деятельности компании';
+            isValid = false;
+        }
+
+        if (!companyData.description.trim()) {
+            newErrors.description = 'Пожалуйста, добавьте описание компании';
+            isValid = false;
+        } else if (companyData.description.length < 10) {
+            newErrors.description = 'Описание должно содержать минимум 10 символов';
+            isValid = false;
+        }
+
+        if (!companyData.logo) {
+            newErrors.logo = 'Пожалуйста, загрузите логотип компании';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
     };
 
     const handleSubmit = () => {
-        if (description && file) {
-            console.log('Описание компании:', description);
-            console.log('Загруженный файл:', file);
-
-            // Перенаправление на страницу "/hr"
+        if (validateForm()) {
+            onSubmit(companyData);
             router.push('/hr');
-        } else {
-            alert('Пожалуйста, заполните все поля!');
         }
     };
 
@@ -37,42 +112,63 @@ const StepTwo = () => {
                 Давайте познакомимся <br />
                 вами и вашей компании
             </p>
-            <div className="flex w-full flex-col items-center gap-2.5">
-                <div className="relative flex w-1/3 flex-row items-center gap-3">
-                    <div className="flex w-full flex-col items-center">
-                        <p className="text-base">Этап 1</p>
-                        <div className="my-1.5 h-[5px] w-full rounded-[20px] border border-[#814BFF] bg-[#814BFF]"></div>
+            <div className="flex w-2/3 flex-col gap-4">
+                <div className="flex w-full flex-col gap-4">
+                    <div className="flex flex-col gap-1">
+                        <Input
+                            label="Введите название компании"
+                            value={companyData.companyName}
+                            onChange={(e) =>
+                                handleInputChange(
+                                    'companyName',
+                                    (e.target as HTMLInputElement).value,
+                                )
+                            }
+                        />
+                        {errors.companyName && (
+                            <span className="text-xs text-red-500">{errors.companyName}</span>
+                        )}
                     </div>
-                    <div className="flex w-full flex-col items-center">
-                        <p className="text-base">Этап 2</p>
-                        <div className="my-1.5 h-[5px] w-full rounded-[20px] border border-[#814BFF] bg-[#814BFF]"></div>
+                    <div className="flex flex-col gap-1">
+                        <Input
+                            label="Чем занимается ваша компания?"
+                            value={companyData.industry}
+                            onChange={(e) =>
+                                handleInputChange('industry', (e.target as HTMLInputElement).value)
+                            }
+                        />
+                        {errors.industry && (
+                            <span className="text-xs text-red-500">{errors.industry}</span>
+                        )}
                     </div>
                 </div>
-                <div className="flex w-2/3 flex-col gap-4">
-                    <div className="flex w-full flex-row items-center gap-5">
-                        <Input label="Введите название компании" />
-                        <Input label="Чем занимается ваша компания?" />
-                    </div>
+                <div className="flex flex-col gap-1">
                     <textarea
                         className="h-40 w-full rounded-[5px] border border-[#39393933] bg-[#F9F9F9] px-6 py-5 text-base font-medium text-[#484848] focus:outline-none"
                         placeholder="Расскажите подробнее о компании, чтобы будущие сотрудники могли познакомиться с компанией"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={companyData.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
                     />
-                    <p className="-mb-3 text-sm font-normal leading-5 opacity-50">
-                        мин: 300 на 300 пкс
-                    </p>
-                    <div className="flex w-full flex-row items-center gap-5">
+                    {errors.description && (
+                        <span className="text-xs text-red-500">{errors.description}</span>
+                    )}
+                </div>
+                <p className="-mb-3 text-sm font-normal leading-5 opacity-50">
+                    мин: 300 на 300 пкс
+                </p>
+                <div className="flex w-full flex-row items-center gap-5">
+                    <div className="flex flex-grow flex-col gap-1">
                         <Input
                             type="file"
                             onFileChange={handleFileChange}
                             iconLeft={<LinkIcon />}
                             label="Загрузите логотип или аватарку компании"
                         />
-                        <Button onClick={handleSubmit} className="">
-                            Пройти далее
-                        </Button>
+                        {errors.logo && <span className="text-xs text-red-500">{errors.logo}</span>}
                     </div>
+                    <Button onClick={handleSubmit} className="">
+                        Пройти далее
+                    </Button>
                 </div>
             </div>
         </div>
