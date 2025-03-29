@@ -12,14 +12,14 @@ const StepsWrapper = () => {
         name: '',
         phone: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     });
 
     const [errors, setErrors] = useState({
         name: '',
         phone: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     });
 
     const validateForm = () => {
@@ -28,7 +28,7 @@ const StepsWrapper = () => {
             name: '',
             phone: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
         };
 
         // Name validation
@@ -76,7 +76,7 @@ const StepsWrapper = () => {
         if (field === 'phone') {
             // Удаляем все нецифровые символы
             const digits = value.replace(/\D/g, '');
-            
+
             // Форматируем номер телефона
             let formattedPhone = '';
             if (digits.length > 0) {
@@ -100,18 +100,18 @@ const StepsWrapper = () => {
                     formattedPhone += '-' + digits.slice(8, 10);
                 }
             }
-            
+
             value = formattedPhone;
         }
-        
-        setFormData(prev => ({
+
+        setFormData((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
         // Clear error when user starts typing
-        setErrors(prev => ({
+        setErrors((prev) => ({
             ...prev,
-            [field]: ''
+            [field]: '',
         }));
     };
 
@@ -120,7 +120,7 @@ const StepsWrapper = () => {
             console.log('Form Data:', {
                 name: formData.name,
                 phone: formData.phone,
-                password: formData.password
+                password: formData.password,
             });
             router.push('/client');
         }
@@ -135,38 +135,52 @@ const StepsWrapper = () => {
                 </p>
                 <div className="flex w-1/3 flex-col gap-2.5">
                     <div className="flex flex-col gap-1">
-                        <Input 
-                            label="Введите ваше имя" 
+                        <Input
+                            label="Введите ваше имя"
                             value={formData.name}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('name', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleInputChange('name', e.target.value)
+                            }
                         />
                         {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Input 
-                            label="+7 ( ___ ) ___ - __ - __" 
+                        <Input
+                            label="+7 ( ___ ) ___ - __ - __"
                             value={formData.phone}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('phone', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleInputChange('phone', e.target.value)
+                            }
                         />
-                        {errors.phone && <span className="text-xs text-red-500">{errors.phone}</span>}
+                        {errors.phone && (
+                            <span className="text-xs text-red-500">{errors.phone}</span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Input 
-                            label="Придумайте пароль" 
+                        <Input
+                            label="Придумайте пароль"
                             type="password"
                             value={formData.password}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleInputChange('password', e.target.value)
+                            }
                         />
-                        {errors.password && <span className="text-xs text-red-500">{errors.password}</span>}
+                        {errors.password && (
+                            <span className="text-xs text-red-500">{errors.password}</span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1">
-                        <Input 
-                            label="Повторите пароль" 
+                        <Input
+                            label="Повторите пароль"
                             type="password"
                             value={formData.confirmPassword}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('confirmPassword', e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                handleInputChange('confirmPassword', e.target.value)
+                            }
                         />
-                        {errors.confirmPassword && <span className="text-xs text-red-500">{errors.confirmPassword}</span>}
+                        {errors.confirmPassword && (
+                            <span className="text-xs text-red-500">{errors.confirmPassword}</span>
+                        )}
                     </div>
                     <Button className="" onClick={onNext}>
                         Пройти далее

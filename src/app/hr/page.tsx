@@ -6,7 +6,7 @@ import Retained from './_components/retained';
 
 const HrPage = () => {
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 accent-color">
             <VacanciesInfo />
             <ActiveVacancies />
             <Feedback />
