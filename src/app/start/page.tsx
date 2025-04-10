@@ -20,7 +20,7 @@ const Star = () => {
                 <LogoHr color="#814BFF" />
                 <Link
                     className="flex flex-row items-center gap-3 rounded-md border border-[#814BFF] px-6 py-4 text-[#814BFF]"
-                    href={'#!'}
+                    href={'/start/login'}
                 >
                     <Login />
                     Войти

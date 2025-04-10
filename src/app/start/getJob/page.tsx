@@ -1,128 +1,68 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+// First install the package:
+// npm install @hookform/resolvers zod
+import { zodResolver } from '@hookform/resolvers/zod';
 import LogoHr from '@/assets/icons/LogoHr.svg';
 import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
-import { IRegistrationForm } from '@/data/types';
+import { useRegister } from '@/api/auth/hooks';
+import { registration, type Registration } from '@/api/post/types';
 
 const StepsWrapper = () => {
     const router = useRouter();
-    const [formData, setFormData] = useState<IRegistrationForm>({
-        name: '',
-        phone: '',
-        password: '',
-        confirmPassword: '',
-    });
+    const register = useRegister();
 
-    const [errors, setErrors] = useState({
-        name: '',
-        phone: '',
-        password: '',
-        confirmPassword: '',
-    });
-
-    const validateForm = () => {
-        let isValid = true;
-        const newErrors = {
-            name: '',
-            phone: '',
+    const {
+        register: registerField,
+        handleSubmit,
+        formState: { errors },
+        setValue,
+        watch,
+    } = useForm<Registration>({
+        resolver: zodResolver(registration),
+        defaultValues: {
+            full_name: '',
+            phone_number: '',
             password: '',
-            confirmPassword: '',
-        };
+        },
+    });
 
-        // Name validation
-        if (!formData.name.trim()) {
-            newErrors.name = 'Пожалуйста, введите ваше имя';
-            isValid = false;
-        } else if (formData.name.length < 2) {
-            newErrors.name = 'Имя должно содержать минимум 2 символа';
-            isValid = false;
+    const formatPhoneNumber = (value: string) => {
+        const digits = value.replace(/\D/g, '');
+        let formattedPhone = '';
+
+        if (digits.length > 0) {
+            formattedPhone = '+7';
+            if (digits.length > 0) formattedPhone += ' (';
+            if (digits.length > 0) formattedPhone += digits.slice(0, 3);
+            if (digits.length >= 3) formattedPhone += ')';
+            if (digits.length > 3) formattedPhone += ' ' + digits.slice(3, 6);
+            if (digits.length > 6) formattedPhone += '-' + digits.slice(6, 8);
+            if (digits.length > 8) formattedPhone += '-' + digits.slice(8, 10);
         }
 
-        // Phone validation
-        const phoneRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Пожалуйста, введите номер телефона';
-            isValid = false;
-        } else if (!phoneRegex.test(formData.phone)) {
-            newErrors.phone = 'Неверный формат номера. Используйте: +7 (XXX) XXX-XX-XX';
-            isValid = false;
-        }
-
-        // Password validation
-        if (!formData.password) {
-            newErrors.password = 'Пожалуйста, введите пароль';
-            isValid = false;
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Пароль должен содержать минимум 6 символов';
-            isValid = false;
-        }
-
-        // Confirm password validation
-        if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Пожалуйста, подтвердите пароль';
-            isValid = false;
-        } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Пароли не совпадают';
-            isValid = false;
-        }
-
-        setErrors(newErrors);
-        return isValid;
+        return formattedPhone;
     };
 
-    const handleInputChange = (field: string, value: string) => {
-        if (field === 'phone') {
-            // Удаляем все нецифровые символы
-            const digits = value.replace(/\D/g, '');
-
-            // Форматируем номер телефона
-            let formattedPhone = '';
-            if (digits.length > 0) {
-                formattedPhone = '+7';
-                if (digits.length > 0) {
-                    formattedPhone += ' (';
-                }
-                if (digits.length > 0) {
-                    formattedPhone += digits.slice(0, 3);
-                }
-                if (digits.length >= 3) {
-                    formattedPhone += ')';
-                }
-                if (digits.length > 3) {
-                    formattedPhone += ' ' + digits.slice(3, 6);
-                }
-                if (digits.length > 6) {
-                    formattedPhone += '-' + digits.slice(6, 8);
-                }
-                if (digits.length > 8) {
-                    formattedPhone += '-' + digits.slice(8, 10);
-                }
-            }
-
-            value = formattedPhone;
-        }
-
-        setFormData((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-        // Clear error when user starts typing
-        setErrors((prev) => ({
-            ...prev,
-            [field]: '',
-        }));
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedValue = formatPhoneNumber(e.target.value);
+        setValue('phone_number', formattedValue);
     };
 
-    const onNext = () => {
-        if (validateForm()) {
-            console.log('Form Data:', {
-                name: formData.name,
-                phone: formData.phone,
-                password: formData.password,
+    const onSubmit = async (data: Registration) => {
+        try {
+            console.log(data);
+            const cleanPhoneNumber = '7' + data.phone_number.replace(/\D/g, '').slice(1);
+            await register.mutateAsync({
+                ...data,
+                phone_number: cleanPhoneNumber,
             });
             router.push('/client');
+        } catch (error) {
+            console.error('Registration failed:', error);
         }
     };
 
@@ -133,59 +73,46 @@ const StepsWrapper = () => {
                 <p className="text-center text-[32px] font-semibold">
                     Давайте познакомимся <br /> с вами и найдем <br /> вам работу
                 </p>
-                <div className="flex w-1/3 flex-col gap-2.5">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex w-1/3 flex-col gap-2.5">
                     <div className="flex flex-col gap-1">
                         <Input
                             label="Введите ваше имя"
-                            value={formData.name}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleInputChange('name', e.target.value)
-                            }
+                            {...registerField('full_name')}
+                            error={errors.full_name?.message}
                         />
-                        {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
+                        {errors.full_name && (
+                            <span className="text-xs text-red-500">{errors.full_name.message}</span>
+                        )}
                     </div>
                     <div className="flex flex-col gap-1">
                         <Input
                             label="+7 ( ___ ) ___ - __ - __"
-                            value={formData.phone}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleInputChange('phone', e.target.value)
-                            }
+                            {...registerField('phone_number')}
+                            value={watch('phone_number')}
+                            onChange={handlePhoneChange}
+                            error={errors.phone_number?.message}
                         />
-                        {errors.phone && (
-                            <span className="text-xs text-red-500">{errors.phone}</span>
+                        {errors.phone_number && (
+                            <span className="text-xs text-red-500">
+                                {errors.phone_number.message}
+                            </span>
                         )}
                     </div>
                     <div className="flex flex-col gap-1">
                         <Input
                             label="Придумайте пароль"
                             type="password"
-                            value={formData.password}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleInputChange('password', e.target.value)
-                            }
+                            {...registerField('password')}
+                            error={errors.password?.message}
                         />
                         {errors.password && (
-                            <span className="text-xs text-red-500">{errors.password}</span>
+                            <span className="text-xs text-red-500">{errors.password.message}</span>
                         )}
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <Input
-                            label="Повторите пароль"
-                            type="password"
-                            value={formData.confirmPassword}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                handleInputChange('confirmPassword', e.target.value)
-                            }
-                        />
-                        {errors.confirmPassword && (
-                            <span className="text-xs text-red-500">{errors.confirmPassword}</span>
-                        )}
-                    </div>
-                    <Button className="" onClick={onNext}>
-                        Пройти далее
+                    <Button type="submit" className="" disabled={register.isPending}>
+                        {register.isPending ? 'Загрузка...' : 'Пройти далее'}
                     </Button>
-                </div>
+                </form>
             </div>
         </div>
     );

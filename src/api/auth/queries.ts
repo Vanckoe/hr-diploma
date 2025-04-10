@@ -11,7 +11,7 @@ export const loginUser = async (credentials: Login): Promise<AuthResponse> => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(credentials),
+            body: credentials,
         });
 
         return response.data;
@@ -28,7 +28,7 @@ export const registerUser = async (credentials: Registration) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(credentials),
+            body: credentials,
         });
 
         return await response.data;
@@ -45,7 +45,7 @@ export const refreshToken = async (refresh: string): Promise<AuthResponse> => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ refresh }),
+            body: refresh,
         });
 
         return response.data;

@@ -16,10 +16,35 @@ export const login = z.object({
 export type Login = z.infer<typeof login>;
 
 export const registration = z.object({
-    full_name: z.string(),
-    phone_number: z.string(),
-    password: z.string(),
-    user_pic: z.string(),
+    full_name: z
+        .string({
+            required_error: 'Введите ваше имя',
+            invalid_type_error: 'Имя должно быть строкой',
+        })
+        .min(1, 'Имя не может быть пустым')
+        .max(255, 'Имя не может быть длиннее 255 символов'),
+    phone_number: z
+        .string({
+            required_error: 'Введите номер телефона',
+            invalid_type_error: 'Номер телефона должен быть строкой',
+        })
+        .min(1, 'Номер телефона не может быть пустым')
+        .max(20, 'Номер телефона не может быть длиннее 20 символов'),
+    password: z
+        .string({
+            required_error: 'Придумайте пароль',
+            invalid_type_error: 'Пароль должен быть строкой',
+        })
+        .min(1, 'Пароль не может быть пустым')
+        .max(128, 'Пароль не может быть длиннее 128 символов'),
+    user_pic: z
+        .string({
+            invalid_type_error: 'URL изображения должен быть строкой',
+        })
+        .url('Некорректный формат URL')
+        .max(200, 'URL изображения не может быть длиннее 200 символов')
+        .nullable()
+        .optional(),
 });
 
 export type Registration = z.infer<typeof registration>;
