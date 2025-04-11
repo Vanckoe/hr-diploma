@@ -6,15 +6,14 @@ import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
 
 interface IFormData {
-    name: string;
-    phone: string;
+    full_name: string;
+    phone_number: string;
     password: string;
     confirmPassword: string;
 }
-
 interface IFormErrors {
-    name: string;
-    phone: string;
+    full_name: string;
+    phone_number: string;
     password: string;
     confirmPassword: string;
 }
@@ -25,15 +24,15 @@ interface StepOneProps {
 
 const StepOne = ({ onNext }: StepOneProps) => {
     const [formData, setFormData] = useState<IFormData>({
-        name: '',
-        phone: '',
+        full_name: '',
+        phone_number: '',
         password: '',
         confirmPassword: '',
     });
 
     const [errors, setErrors] = useState<IFormErrors>({
-        name: '',
-        phone: '',
+        full_name: '',
+        phone_number: '',
         password: '',
         confirmPassword: '',
     });
@@ -41,26 +40,26 @@ const StepOne = ({ onNext }: StepOneProps) => {
     const validateForm = () => {
         let isValid = true;
         const newErrors = {
-            name: '',
-            phone: '',
+            full_name: '',
+            phone_number: '',
             password: '',
             confirmPassword: '',
         };
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Пожалуйста, введите ваше имя';
+        if (!formData.full_name.trim()) {
+            newErrors.full_name = 'Пожалуйста, введите ваше имя';
             isValid = false;
-        } else if (formData.name.length < 2) {
-            newErrors.name = 'Имя должно содержать минимум 2 символа';
+        } else if (formData.full_name.length < 2) {
+            newErrors.full_name = 'Имя должно содержать минимум 2 символа';
             isValid = false;
         }
 
-        const phoneRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Пожалуйста, введите номер телефона';
+        const phone_numberRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
+        if (!formData.phone_number.trim()) {
+            newErrors.phone_number = 'Пожалуйста, введите номер телефона';
             isValid = false;
-        } else if (!phoneRegex.test(formData.phone)) {
-            newErrors.phone = 'Неверный формат номера. Используйте: +7 (XXX) XXX-XX-XX';
+        } else if (!phone_numberRegex.test(formData.phone_number)) {
+            newErrors.phone_number = 'Неверный формат номера. Используйте: +7 (XXX) XXX-XX-XX';
             isValid = false;
         }
 
@@ -85,31 +84,31 @@ const StepOne = ({ onNext }: StepOneProps) => {
     };
 
     const handleInputChange = (field: keyof IFormData, value: string) => {
-        if (field === 'phone') {
+        if (field === 'phone_number') {
             const digits = value.replace(/\D/g, '');
-            let formattedPhone = '';
+            let formattedphone_number = '';
             if (digits.length > 0) {
-                formattedPhone = '+7';
+                formattedphone_number = '+7';
                 if (digits.length > 0) {
-                    formattedPhone += ' (';
+                    formattedphone_number += ' (';
                 }
                 if (digits.length > 0) {
-                    formattedPhone += digits.slice(0, 3);
+                    formattedphone_number += digits.slice(0, 3);
                 }
                 if (digits.length >= 3) {
-                    formattedPhone += ')';
+                    formattedphone_number += ')';
                 }
                 if (digits.length > 3) {
-                    formattedPhone += ' ' + digits.slice(3, 6);
+                    formattedphone_number += ' ' + digits.slice(3, 6);
                 }
                 if (digits.length > 6) {
-                    formattedPhone += '-' + digits.slice(6, 8);
+                    formattedphone_number += '-' + digits.slice(6, 8);
                 }
                 if (digits.length > 8) {
-                    formattedPhone += '-' + digits.slice(8, 10);
+                    formattedphone_number += '-' + digits.slice(8, 10);
                 }
             }
-            value = formattedPhone;
+            value = formattedphone_number;
         }
 
         setFormData((prev) => ({
@@ -150,25 +149,35 @@ const StepOne = ({ onNext }: StepOneProps) => {
                 <div className="flex flex-col gap-1">
                     <Input
                         label="Введите ваше имя"
-                        value={formData.name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('name', e.target.value)}
+                        value={formData.full_name}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleInputChange('full_name', e.target.value)
+                        }
                     />
-                    {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
+                    {errors.full_name && (
+                        <span className="text-xs text-red-500">{errors.full_name}</span>
+                    )}
                 </div>
                 <div className="flex flex-col gap-1">
                     <Input
                         label="+7 ( ___ ) ___ - __ - __"
-                        value={formData.phone}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('phone', e.target.value)}
+                        value={formData.phone_number}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleInputChange('phone_number', e.target.value)
+                        }
                     />
-                    {errors.phone && <span className="text-xs text-red-500">{errors.phone}</span>}
+                    {errors.phone_number && (
+                        <span className="text-xs text-red-500">{errors.phone_number}</span>
+                    )}
                 </div>
                 <div className="flex flex-col gap-1">
                     <Input
                         label="Придумайте пароль"
                         type="password"
                         value={formData.password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('password', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleInputChange('password', e.target.value)
+                        }
                     />
                     {errors.password && (
                         <span className="text-xs text-red-500">{errors.password}</span>
@@ -179,7 +188,9 @@ const StepOne = ({ onNext }: StepOneProps) => {
                         label="Повторите пароль"
                         type="password"
                         value={formData.confirmPassword}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('confirmPassword', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleInputChange('confirmPassword', e.target.value)
+                        }
                     />
                     {errors.confirmPassword && (
                         <span className="text-xs text-red-500">{errors.confirmPassword}</span>

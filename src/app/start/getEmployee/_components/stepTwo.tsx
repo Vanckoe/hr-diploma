@@ -8,17 +8,15 @@ import Button from '@/components/ui/button';
 import LinkIcon from '@/assets/icons/Link';
 
 interface ICompanyFormData {
-    companyName: string;
+    company_name: string;
     industry: string;
-    description: string;
-    logo: File | null;
+    company_description: string;
 }
 
 interface ICompanyFormErrors {
-    companyName: string;
+    company_name: string;
     industry: string;
-    description: string;
-    logo: string;
+    company_description: string;
 }
 
 interface StepTwoProps {
@@ -34,17 +32,15 @@ interface StepTwoProps {
 const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
     const router = useRouter();
     const [companyData, setCompanyData] = useState<ICompanyFormData>({
-        companyName: '',
+        company_name: '',
         industry: '',
-        description: '',
-        logo: null,
+        company_description: '',
     });
 
     const [errors, setErrors] = useState<ICompanyFormErrors>({
-        companyName: '',
+        company_name: '',
         industry: '',
-        description: '',
-        logo: '',
+        company_description: '',
     });
 
     const handleInputChange = (field: keyof ICompanyFormData, value: string | File | null) => {
@@ -58,21 +54,16 @@ const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
         }));
     };
 
-    const handleFileChange = (selectedFile: File | null) => {
-        handleInputChange('logo', selectedFile);
-    };
-
     const validateForm = () => {
         let isValid = true;
         const newErrors = {
-            companyName: '',
+            company_name: '',
             industry: '',
-            description: '',
-            logo: '',
+            company_description: '',
         };
 
-        if (!companyData.companyName.trim()) {
-            newErrors.companyName = 'Пожалуйста, введите название компании';
+        if (!companyData.company_name.trim()) {
+            newErrors.company_name = 'Пожалуйста, введите название компании';
             isValid = false;
         }
 
@@ -81,16 +72,11 @@ const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
             isValid = false;
         }
 
-        if (!companyData.description.trim()) {
-            newErrors.description = 'Пожалуйста, добавьте описание компании';
+        if (!companyData.company_description.trim()) {
+            newErrors.company_description = 'Пожалуйста, добавьте описание компании';
             isValid = false;
-        } else if (companyData.description.length < 10) {
-            newErrors.description = 'Описание должно содержать минимум 10 символов';
-            isValid = false;
-        }
-
-        if (!companyData.logo) {
-            newErrors.logo = 'Пожалуйста, загрузите логотип компании';
+        } else if (companyData.company_description.length < 10) {
+            newErrors.company_description = 'Описание должно содержать минимум 10 символов';
             isValid = false;
         }
 
@@ -117,16 +103,16 @@ const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
                     <div className="flex flex-col gap-1">
                         <Input
                             label="Введите название компании"
-                            value={companyData.companyName}
+                            value={companyData.company_name}
                             onChange={(e) =>
                                 handleInputChange(
-                                    'companyName',
+                                    'company_name',
                                     (e.target as HTMLInputElement).value,
                                 )
                             }
                         />
-                        {errors.companyName && (
-                            <span className="text-xs text-red-500">{errors.companyName}</span>
+                        {errors.company_name && (
+                            <span className="text-xs text-red-500">{errors.company_name}</span>
                         )}
                     </div>
                     <div className="flex flex-col gap-1">
@@ -146,26 +132,14 @@ const StepTwo = ({ onSubmit, formData }: StepTwoProps) => {
                     <textarea
                         className="h-40 w-full rounded-[5px] border border-[#39393933] bg-[#F9F9F9] px-6 py-5 text-base font-medium text-[#484848] focus:outline-none"
                         placeholder="Расскажите подробнее о компании, чтобы будущие сотрудники могли познакомиться с компанией"
-                        value={companyData.description}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        value={companyData.company_description}
+                        onChange={(e) => handleInputChange('company_description', e.target.value)}
                     />
-                    {errors.description && (
-                        <span className="text-xs text-red-500">{errors.description}</span>
+                    {errors.company_description && (
+                        <span className="text-xs text-red-500">{errors.company_description}</span>
                     )}
                 </div>
-                <p className="-mb-3 text-sm font-normal leading-5 opacity-50">
-                    мин: 300 на 300 пкс
-                </p>
                 <div className="flex w-full flex-row items-center gap-5">
-                    <div className="flex flex-grow flex-col gap-1">
-                        <Input
-                            type="file"
-                            onFileChange={handleFileChange}
-                            iconLeft={<LinkIcon />}
-                            label="Загрузите логотип или аватарку компании"
-                        />
-                        {errors.logo && <span className="text-xs text-red-500">{errors.logo}</span>}
-                    </div>
                     <Button onClick={handleSubmit} className="">
                         Пройти далее
                     </Button>

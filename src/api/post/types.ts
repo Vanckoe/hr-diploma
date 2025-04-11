@@ -55,3 +55,15 @@ export const authResponse = z.object({
 });
 
 export type AuthResponse = z.infer<typeof authResponse>;
+
+export const hrRegistration = z.object({
+    full_name: z.string(),
+    password: z.string(),
+    phone_number: z.string(),
+    company_name: z.string(),
+    industry: z.string(),
+    company_description: z.string(),
+    logo_hr: z.string().optional(),
+});
+
+export type HrRegistrationin = z.infer<typeof hrRegistration>;
