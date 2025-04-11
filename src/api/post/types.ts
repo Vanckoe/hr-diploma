@@ -9,8 +9,18 @@ import { z } from 'zod';
 // export type Post = z.infer<typeof post>;
 
 export const login = z.object({
-    phone_number: z.string(),
-    password: z.string(),
+    phone_number: z
+        .string({
+            required_error: 'Введите номер телефона',
+        })
+        .min(10, 'Номер телефона должен содержать не менее 10 цифр')
+        .max(20, 'Номер телефона не может быть длиннее 20 символов'),
+    password: z
+        .string({
+            required_error: 'Введите пароль',
+        })
+        .min(6, 'Пароль должен содержать не менее 6 символов')
+        .max(128, 'Пароль не может быть длиннее 128 символов'),
 });
 
 export type Login = z.infer<typeof login>;
