@@ -19,3 +19,20 @@ export const createVacancy = async (credentials: Vacancy): Promise<any> => {
         throw new Error(error instanceof Error ? error.message : 'Failed to create vacancy');
     }
 };
+
+// Function to get HR vacancies
+export const getVacancies = async (): Promise<Vacancy[]> => {
+    try {
+        const response = await apiClient.request<Vacancy[]>('companies/vacancies/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getHrTokens().access}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : 'Failed to get vacancies');
+    }
+};
