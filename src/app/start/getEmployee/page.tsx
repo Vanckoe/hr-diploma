@@ -54,7 +54,7 @@ const StepsWrapper = () => {
 
         registerHr(finalFormData, {
             onSuccess: () => {
-                router.push('/hr/dashboard');
+                router.push('/start/getEmployee/login');
             },
             onError: (error) => {
                 console.error('Registration failed:', error);

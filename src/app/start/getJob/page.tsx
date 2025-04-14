@@ -30,32 +30,43 @@ const StepsWrapper = () => {
         },
     });
 
-    const formatPhoneNumber = (value: string) => {
-        const digits = value.replace(/\D/g, '');
-        let formattedPhone = '';
+    const formatPhoneForView = (digits: string): string => {
+        const cleaned = digits.slice(0, 11);
 
-        if (digits.length > 0) {
-            formattedPhone = '+7';
-            if (digits.length > 0) formattedPhone += ' (';
-            if (digits.length > 0) formattedPhone += digits.slice(0, 3);
-            if (digits.length >= 3) formattedPhone += ')';
-            if (digits.length > 3) formattedPhone += ' ' + digits.slice(3, 6);
-            if (digits.length > 6) formattedPhone += '-' + digits.slice(6, 8);
-            if (digits.length > 8) formattedPhone += '-' + digits.slice(8, 10);
+        let result = '';
+
+        if (cleaned.length >= 1) {
+            result += cleaned.slice(0, 1); // первая цифра (например, 7)
         }
 
-        return formattedPhone;
+        if (cleaned.length >= 2) {
+            result += `(${cleaned.slice(1, 4)}`;
+        }
+
+        if (cleaned.length >= 5) {
+            result += `)${cleaned.slice(4, 7)}`;
+        }
+
+        if (cleaned.length >= 8) {
+            result += `-${cleaned.slice(7, 9)}`;
+        }
+
+        if (cleaned.length >= 10) {
+            result += `-${cleaned.slice(9, 11)}`;
+        }
+
+        return result;
     };
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formattedValue = formatPhoneNumber(e.target.value);
+        const digits = e.target.value.replace(/\D/g, '');
+        const formattedValue = formatPhoneForView(digits);
         setValue('phone_number', formattedValue);
     };
 
     const onSubmit = async (data: Registration) => {
         try {
-            console.log(data);
-            const cleanPhoneNumber = '7' + data.phone_number.replace(/\D/g, '').slice(1);
+            const cleanPhoneNumber = data.phone_number.replace(/\D/g, '');
             await register.mutateAsync({
                 ...data,
                 phone_number: cleanPhoneNumber,

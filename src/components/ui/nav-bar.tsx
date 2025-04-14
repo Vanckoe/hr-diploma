@@ -21,7 +21,11 @@ const Sidebar = () => {
 
                 <nav className="mt-10 flex flex-col items-center justify-center gap-2 pl-6">
                     <NavItem href="/hr" icon={<Home color="#814BFF" />} text="Главная" />
-                    <NavItem href="#!" icon={<Mail color="#814BFF" />} text="Архив вакансий" />
+                    <NavItem
+                        href="/hr/archive"
+                        icon={<Mail color="#814BFF" />}
+                        text="Архив вакансий"
+                    />
                     <NavItem href="#!" icon={<TablePaper color="#814BFF" />} text="Вакансии" />
                     <NavItem href="#!" icon={<User color="#814BFF" />} text="Кандидаты" />
                 </nav>

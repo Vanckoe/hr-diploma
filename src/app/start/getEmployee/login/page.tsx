@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useLogin } from '@/api/auth/hooks';
+import { useHr } from '@/api/auth/hooks';
 import { useRouter } from 'next/navigation';
 import { login as loginSchema } from '@/api/post/types';
 import { z } from 'zod';
-import { saveTokens, getTokens } from '@/lib/auth/tokens';
+import { saveHrTokens, getHrTokens } from '@/lib/auth/tokens';
 
 export default function LoginPage() {
     const [phone, setPhone] = useState('');
@@ -13,7 +13,7 @@ export default function LoginPage() {
     const [error, setError] = useState('');
 
     const router = useRouter();
-    const { mutate: login, isPending } = useLogin();
+    const { mutate: login, isPending } = useHr();
 
     const formatPhoneForView = (digits: string): string => {
         const cleaned = digits.slice(0, 11);
@@ -59,8 +59,8 @@ export default function LoginPage() {
                 { phone_number: phone, password },
                 {
                     onSuccess: (data) => {
-                        saveTokens(data);
-                        const savedTokens = getTokens();
+                        saveHrTokens(data);
+                        const savedTokens = getHrTokens();
                         console.log('Сохраненные HR токены:', savedTokens);
                         router.push('/hr');
                     },
