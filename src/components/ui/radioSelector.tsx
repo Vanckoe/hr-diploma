@@ -5,6 +5,7 @@ type RadioSelectProps<T extends string> = {
     options: T[];
     label: string;
     onChange: (value: T) => void;
+    error?: string;
 };
 
 const RadioSelect = <T extends string>({ options, label, onChange }: RadioSelectProps<T>) => {

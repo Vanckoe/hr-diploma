@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import StepOne from './_components/stepOne';
 import StepTwo from './_components/stepTwo';
 import StepThree from './_components/stepThree';
+import { z } from 'zod';
+import { UserResume , userResume } from '@/api/post/types';
 
 interface FormData {
     fullName: string;
@@ -25,6 +27,7 @@ interface FormData {
 const NewVacancy: React.FC = () => {
     const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
     const [formData, setFormData] = useState<FormData>({
+        
         fullName: '',
         positionWant: '',
         specialization: '',
