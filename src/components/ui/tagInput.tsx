@@ -6,11 +6,17 @@ import { X } from 'lucide-react';
 interface TagInputProps {
     label?: string;
     placeholder?: string;
+    value?: string[];
     onChange?: (tags: string[]) => void;
 }
 
-const TagInput: React.FC<TagInputProps> = ({ label, placeholder = 'Введите текст', onChange }) => {
-    const [tags, setTags] = useState<string[]>([]);
+const TagInput: React.FC<TagInputProps> = ({
+    label,
+    placeholder = 'Введите текст',
+    value = [],
+    onChange,
+}) => {
+    const [tags, setTags] = useState<string[]>(value);
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

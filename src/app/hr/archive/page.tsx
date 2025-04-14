@@ -1,10 +1,13 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getVacancies } from '@/api/hr/queries';
 import { GetVacancy } from '@/api/hr/types';
+import EditVacancyModal from './_components/EditVacancyModal';
 
 const ArchivePage = () => {
+    const [selectedVacancy, setSelectedVacancy] = useState<GetVacancy | null>(null);
+
     const {
         data: archivedVacancies,
         isLoading,
@@ -48,13 +51,22 @@ const ArchivePage = () => {
                             <span className="text-gray-600">{`от ${vacancy.salary_min} до ${vacancy.salary_max}₸`}</span>
                         </div>
                         <div className="flex gap-4">
-                            <button className="text-gray-600 hover:underline" onClick={() => {}}>
+                            <button
+                                className="text-gray-600 hover:underline"
+                                onClick={() => setSelectedVacancy(vacancy)}
+                            >
                                 Редактировать
                             </button>
                         </div>
                     </div>
                 ))}
             </div>
+            {selectedVacancy && (
+                <EditVacancyModal
+                    vacancy={selectedVacancy}
+                    onClose={() => setSelectedVacancy(null)}
+                />
+            )}
         </div>
     );
 };

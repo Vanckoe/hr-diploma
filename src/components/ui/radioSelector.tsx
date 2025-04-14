@@ -3,13 +3,19 @@ import React, { useState } from 'react';
 
 type RadioSelectProps<T extends string> = {
     options: T[];
-    label: string;
+    value?: T;
+    label?: string;
     onChange: (value: T) => void;
     error?: string;
 };
 
-const RadioSelect = <T extends string>({ options, label, onChange }: RadioSelectProps<T>) => {
-    const [selected, setSelected] = useState<T | null>(null);
+const RadioSelect = <T extends string>({
+    options,
+    value,
+    label,
+    onChange,
+}: RadioSelectProps<T>) => {
+    const [selected, setSelected] = useState<T | null>(value ? (value as T) : null);
 
     const handleSelect = (option: T) => {
         setSelected(option);
