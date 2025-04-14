@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import LogoHr from '@/assets/icons/LogoHr.svg';
 import Input from '@/components/ui/input';
 import Button from '@/components/ui/button';
+import Link from 'next/link';
 
 interface IFormData {
     full_name: string;
@@ -199,6 +200,9 @@ const StepOne = ({ onNext }: StepOneProps) => {
                 <Button className="" onClick={handleSubmit}>
                     Пройти далее
                 </Button>
+                <Link href={'/start/getEmployee/login'} className="text-red-700">
+                    Уже есть аккаунт
+                </Link>
             </div>
         </div>
     );
