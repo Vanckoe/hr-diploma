@@ -1,43 +1,73 @@
 'use client';
-import React from 'react';
-import Input from '@/components/ui/input';
-import RadioSelect from '@/components/ui/radioSelector';
+import React, { useState } from 'react';
+import StepOne from './_components/StepOne';
+import StepTwo from './_components/StepTwo';
+import type { StepOneData, StepTwoData } from './validation';
+import { vacancy } from '@/api/hr/types';
+import { useLogin } from '@/api/hr/hooks';
 
 const Vacancy = () => {
-    const workFormats = ['На месте работодателя', 'Удаленно', 'Гибрид', 'Разъездной'] as const;
-    const exp = ['Нет опыта', 'От 1 года до 3-х лет', 'От 3 до 6 лет', 'От 6 лет'] as const;
+    const [currentStep, setCurrentStep] = useState<1 | 2>(1);
+    const [formData, setFormData] = useState<{
+        stepOne?: StepOneData;
+        stepTwo?: StepTwoData;
+    }>({});
+    const { mutate: createVacancy, isPending } = useLogin();
 
-    const handleFormatChange = (selected: (typeof workFormats)[number]) => {
-        console.log('Выбранный формат:', selected);
+    const handleStepOneComplete = (data: StepOneData) => {
+        setFormData((prev) => ({ ...prev, stepOne: data }));
+        setCurrentStep(2);
     };
-    const handleExpChange = (selected: (typeof exp)[number]) => {
-        console.log('Выбранный формат:', selected);
+
+    const handlePrevStep = () => {
+        setCurrentStep(1);
+    };
+
+    const handleSubmit = (data: StepTwoData) => {
+        if (!formData.stepOne) return;
+
+        const finalData = {
+            job_title: formData.stepOne.job_title,
+            specialization: formData.stepOne.specialization,
+            city: formData.stepOne.city,
+            hiring_plan: formData.stepOne.hiring_plan,
+            work_format: formData.stepOne.work_format,
+            salary_min: formData.stepOne.salary_min,
+            salary_max: formData.stepOne.salary_max,
+            experience: formData.stepOne.experience,
+            required_skills: formData.stepOne.required_skills.reduce(
+                (acc, skill) => {
+                    acc[skill] = true;
+                    return acc;
+                },
+                {} as Record<string, boolean>,
+            ),
+            job_description: data.job_description,
+            responsibilities: { text: data.responsibilities },
+            requirements: { text: data.requirements },
+            conditions: { text: data.conditions },
+        };
+
+        try {
+            const validatedData = vacancy.parse(finalData);
+            createVacancy(validatedData, {
+                onSuccess: () => {
+                    console.log('Вакансия успешно создана');
+                },
+                onError: (error) => {
+                    console.error('Ошибка при создании вакансии:', error);
+                },
+            });
+        } catch (error) {
+            console.error('Ошибка валидации:', error);
+        }
     };
 
     return (
-        <div className="flex flex-col gap-5">
-            <h1 className="text-[36px] font-semibold">Добавить вакансию</h1>
-            <div className="flex w-3/4 flex-col gap-2 rounded-[10px] bg-white px-10 pb-6 pt-9">
-                <p className="text-base font-semibold">Название должности / вакансии</p>
-                <Input placeholder="Введите название компании" />
-                <p className="mt-4 text-base font-semibold">Специализация сотрудника</p>
-                <Input placeholder="Выбрать специализацию" />
-                <p className="mt-4 text-base font-semibold">Город, где искать сотрудника</p>
-                <Input placeholder="Укажите город" />
-                <p className="mt-4 text-base font-semibold">План найма</p>
-                <Input placeholder="Сколько нужно человек" className="mb-4" />
-                <RadioSelect
-                    label="Формат работы"
-                    options={[...workFormats]}
-                    onChange={handleFormatChange}
-                />
-                <p className="mt-4 text-base font-semibold">Оплата в месяц (тг)</p>
-                <div className="mb-4 flex flex-row items-center gap-3">
-                    <Input placeholder="От" className="mb-4" />
-                    <Input placeholder="До" className="mb-4" />
-                </div>
-                <RadioSelect label="Опыт" options={[...exp]} onChange={handleExpChange} />
-            </div>
+        <div>
+            {currentStep === 1 && <StepOne onNext={handleStepOneComplete} />}
+            {currentStep === 2 && <StepTwo onBack={handlePrevStep} onSubmit={handleSubmit} />}
+            {isPending && <div>Отправка данных...</div>}
         </div>
     );
 };

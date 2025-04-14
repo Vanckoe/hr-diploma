@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@/components/ui/button';
+import Link from 'next/link';
 
 const ActiveVacancies = () => {
     return (
@@ -9,7 +10,9 @@ const ActiveVacancies = () => {
                 <p className="text-[32px] font-bold">
                     Давайте добавим вашу <br /> первую вакансию
                 </p>
-                <Button className="mt-[50px] max-w-[310px]">Добавить вакансию</Button>
+                <Link href={'/hr/vacancy'}>
+                    <Button className="mt-[50px] max-w-[310px]">Добавить вакансию</Button>
+                </Link>
             </div>
         </div>
     );
