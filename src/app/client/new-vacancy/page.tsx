@@ -3,8 +3,12 @@ import React, { useState } from 'react';
 import StepOne from './_components/stepOne';
 import StepTwo from './_components/stepTwo';
 import StepThree from './_components/stepThree';
-import { z } from 'zod';
-import { UserResume , userResume } from '@/api/post/types';
+import { useMutation } from '@tanstack/react-query';
+import { apiClient } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { UserResume, userResume } from '@/api/post/types';
+import { getTokens } from '@/lib/auth/tokens';
+import { createResume } from '@/api/resume/queries';
 
 interface FormData {
     fullName: string;
@@ -22,12 +26,15 @@ interface FormData {
     companyName: string;
     position: string;
     workDescription: string;
+    photo: string;
+    skills: string;
+    languages: string;
 }
 
 const NewVacancy: React.FC = () => {
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
     const [formData, setFormData] = useState<FormData>({
-        
         fullName: '',
         positionWant: '',
         specialization: '',
@@ -43,6 +50,45 @@ const NewVacancy: React.FC = () => {
         companyName: '',
         position: '',
         workDescription: '',
+        photo: '',
+        skills: '',
+        languages: ''
+    });
+
+    const { mutate: submitResume } = useMutation({
+        mutationFn: async (data: FormData) => {
+            const payload = {
+                // Обязательные поля (примеры значений)
+                full_name: data.fullName || '', // обязательное
+                position: data.positionWant || '', // обязательное
+                specialization: data.specialization || '', // обязательное
+                work_format: data.workFormat || '', // обязательное
+                ready_for_business_trips: data.trips || '', // обязательное
+                expected_salary: Number(data.salaryFrom) || 0, // обязательное (число)
+                experience: data.experience || '', // обязательное
+
+                // Необязательные поля (если не заполнены - передаем `null`)
+                photo: data.photo || null, // base64 строка или null
+                skills: data.skills?.length ? { values: data.skills } : null, // объект или null
+                about: data.description || null, // строка или null
+                languages: data.languages?.length ? { values: data.languages } : null, // объект или null
+                education: data.university
+                    ? {
+                          // объект или null
+                          university: data.university,
+                          faculty: data.faculty || null,
+                          graduation_year: Number(data.graduationYear) || null,
+                      }
+                    : null,
+            };
+
+            console.log('Отправляемый payload:', payload);
+
+            const response = await createResume(payload);
+            console.log('Ответ от сервера:', response);
+
+            return response;
+        },
     });
 
     const handleNextStep = () => {
@@ -52,9 +98,11 @@ const NewVacancy: React.FC = () => {
     const handlePrevStep = () => {
         if (currentStep > 1) setCurrentStep((prev) => (prev - 1) as 1 | 2 | 3);
     };
+
     const handleFinishStep = () => {
-        console.log(formData);
+        submitResume(formData);
     };
+
     const updateFormData = (newData: Partial<FormData>) => {
         setFormData((prev) => ({
             ...prev,

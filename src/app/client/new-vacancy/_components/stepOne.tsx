@@ -3,6 +3,7 @@ import React from 'react';
 import Input from '@/components/ui/input';
 import RadioSelect from '@/components/ui/radioSelector';
 import Button from '@/components/ui/button';
+import Link from '@/assets/icons/Link';
 
 interface StepOneProps {
     data: {
