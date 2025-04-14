@@ -8,15 +8,43 @@ import { z } from 'zod';
 import { saveTokens, getTokens } from '@/lib/auth/tokens';
 
 export default function LoginPage() {
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState(''); // только цифры
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     const router = useRouter();
     const { mutate: login, isPending } = useLogin();
 
+    const formatPhoneForView = (digits: string): string => {
+        const cleaned = digits.slice(0, 11);
+
+        let result = '';
+
+        if (cleaned.length >= 1) {
+            result += cleaned.slice(0, 1); // первая цифра (например, 7)
+        }
+
+        if (cleaned.length >= 2) {
+            result += `(${cleaned.slice(1, 4)}`;
+        }
+
+        if (cleaned.length >= 5) {
+            result += `)${cleaned.slice(4, 7)}`;
+        }
+
+        if (cleaned.length >= 8) {
+            result += `-${cleaned.slice(7, 9)}`;
+        }
+
+        if (cleaned.length >= 10) {
+            result += `-${cleaned.slice(9, 11)}`;
+        }
+
+        return result;
+    };
+
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const digits = e.target.value.replace(/\D/g, '');
+        const digits = e.target.value.replace(/\D/g, '').slice(0, 11);
         setPhone(digits);
     };
 
@@ -32,7 +60,6 @@ export default function LoginPage() {
                 {
                     onSuccess: (data) => {
                         saveTokens(data);
-                        // Проверяем сохранение токенов
                         const savedTokens = getTokens();
                         console.log('Сохраненные токены:', savedTokens);
                         router.push('/client');
@@ -73,8 +100,8 @@ export default function LoginPage() {
                                 name="phone"
                                 type="tel"
                                 autoComplete="tel"
-                                value={phone}
-                                onChange={handlePhoneChange}
+                                value={formatPhoneForView(phone)} // красиво отображаем
+                                onChange={handlePhoneChange} // сохраняем только цифры
                                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
