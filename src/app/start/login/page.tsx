@@ -61,8 +61,8 @@ export default function LoginPage() {
                     onSuccess: (data) => {
                         saveTokens(data);
                         const savedTokens = getTokens();
-                        console.log('Сохраненные HR токены:', savedTokens);
-                        router.push('/hr');
+                        console.log('Сохраненные токены:', savedTokens);
+                        router.push('/client');
                     },
                     onError: (error: any) => {
                         const errorMessage =
