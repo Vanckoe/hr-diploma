@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { saveTokens, getTokens } from '@/lib/auth/tokens';
 
 export default function LoginPage() {
-    const [phone, setPhone] = useState(''); // только цифры
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
@@ -61,8 +61,8 @@ export default function LoginPage() {
                     onSuccess: (data) => {
                         saveTokens(data);
                         const savedTokens = getTokens();
-                        console.log('Сохраненные токены:', savedTokens);
-                        router.push('/client');
+                        console.log('Сохраненные HR токены:', savedTokens);
+                        router.push('/hr');
                     },
                     onError: (error: any) => {
                         const errorMessage =

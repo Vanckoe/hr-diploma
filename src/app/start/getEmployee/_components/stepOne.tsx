@@ -55,12 +55,12 @@ const StepOne = ({ onNext }: StepOneProps) => {
             isValid = false;
         }
 
-        const phone_numberRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
+        const phone_numberRegex = /^\d\(\d{3}\)\d{3}-\d{2}-\d{2}$/;
         if (!formData.phone_number.trim()) {
             newErrors.phone_number = 'Пожалуйста, введите номер телефона';
             isValid = false;
         } else if (!phone_numberRegex.test(formData.phone_number)) {
-            newErrors.phone_number = 'Неверный формат номера. Используйте: +7 (XXX) XXX-XX-XX';
+            newErrors.phone_number = 'Неверный формат номера. Используйте: 0(000)000-00-00';
             isValid = false;
         }
 
@@ -84,32 +84,38 @@ const StepOne = ({ onNext }: StepOneProps) => {
         return isValid;
     };
 
+    const formatPhoneForView = (digits: string): string => {
+        const cleaned = digits.slice(0, 11);
+
+        let result = '';
+
+        if (cleaned.length >= 1) {
+            result += cleaned.slice(0, 1); // первая цифра (например, 7)
+        }
+
+        if (cleaned.length >= 2) {
+            result += `(${cleaned.slice(1, 4)}`;
+        }
+
+        if (cleaned.length >= 5) {
+            result += `)${cleaned.slice(4, 7)}`;
+        }
+
+        if (cleaned.length >= 8) {
+            result += `-${cleaned.slice(7, 9)}`;
+        }
+
+        if (cleaned.length >= 10) {
+            result += `-${cleaned.slice(9, 11)}`;
+        }
+
+        return result;
+    };
+
     const handleInputChange = (field: keyof IFormData, value: string) => {
         if (field === 'phone_number') {
             const digits = value.replace(/\D/g, '');
-            let formattedphone_number = '';
-            if (digits.length > 0) {
-                formattedphone_number = '+7';
-                if (digits.length > 0) {
-                    formattedphone_number += ' (';
-                }
-                if (digits.length > 0) {
-                    formattedphone_number += digits.slice(0, 3);
-                }
-                if (digits.length >= 3) {
-                    formattedphone_number += ')';
-                }
-                if (digits.length > 3) {
-                    formattedphone_number += ' ' + digits.slice(3, 6);
-                }
-                if (digits.length > 6) {
-                    formattedphone_number += '-' + digits.slice(6, 8);
-                }
-                if (digits.length > 8) {
-                    formattedphone_number += '-' + digits.slice(8, 10);
-                }
-            }
-            value = formattedphone_number;
+            value = formatPhoneForView(digits);
         }
 
         setFormData((prev) => ({
@@ -125,7 +131,11 @@ const StepOne = ({ onNext }: StepOneProps) => {
 
     const handleSubmit = () => {
         if (validateForm()) {
-            onNext(formData);
+            const submissionData = {
+                ...formData,
+                phone_number: formData.phone_number.replace(/\D/g, ''),
+            };
+            onNext(submissionData);
         }
     };
 
