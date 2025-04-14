@@ -5,8 +5,11 @@ import StepTwo from './_components/StepTwo';
 import type { StepOneData, StepTwoData } from './validation';
 import { vacancy } from '@/api/hr/types';
 import { useLogin } from '@/api/hr/hooks';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const Vacancy = () => {
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState<1 | 2>(1);
     const [formData, setFormData] = useState<{
         stepOne?: StepOneData;
@@ -52,9 +55,11 @@ const Vacancy = () => {
             const validatedData = vacancy.parse(finalData);
             createVacancy(validatedData, {
                 onSuccess: () => {
-                    console.log('Вакансия успешно создана');
+                    toast.success('Вакансия успешно создана');
+                    router.push('/hr');
                 },
                 onError: (error) => {
+                    toast.error('Ошибка при создании вакансии');
                     console.error('Ошибка при создании вакансии:', error);
                 },
             });

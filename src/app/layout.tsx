@@ -5,6 +5,7 @@ import ReactQueryProvider from '@/components/providers/ReactQueryProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { UserProvider } from '@/components/providers/UserProvider';
 import { getUser } from '@/lib/auth';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -37,6 +38,7 @@ export default function RootLayout({
                     <UserProvider userPromise={userPromise}>
                         {children}
                         <ReactQueryDevtools />
+                        <Toaster richColors position="top-center" />
                     </UserProvider>
                 </ReactQueryProvider>
             </body>
