@@ -1,4 +1,4 @@
-import { Vacancy, vacancy } from '@/api/hr/types';
+import { Vacancy,GetVacancy , vacancy } from '@/api/hr/types';
 import { apiClient } from '@/lib/api';
 import { getHrTokens } from '@/lib/auth/tokens';
 
@@ -21,9 +21,9 @@ export const createVacancy = async (credentials: Vacancy): Promise<any> => {
 };
 
 // Function to get HR vacancies
-export const getVacancies = async (): Promise<Vacancy[]> => {
+export const getVacancies = async (): Promise<GetVacancy[]> => {
     try {
-        const response = await apiClient.request<Vacancy[]>('companies/vacancies/', {
+        const response = await apiClient.request<GetVacancy[]>('companies/vacancies/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

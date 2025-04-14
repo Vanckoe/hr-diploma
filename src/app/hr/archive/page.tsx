@@ -2,14 +2,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getVacancies } from '@/api/hr/queries';
-import { Vacancy } from '@/api/hr/types';
+import { GetVacancy } from '@/api/hr/types';
 
 const ArchivePage = () => {
     const {
         data: archivedVacancies,
         isLoading,
         error,
-    } = useQuery<Vacancy[]>({
+    } = useQuery<GetVacancy[]>({
         queryKey: ['archivedVacancies'],
         queryFn: getVacancies,
     });

@@ -35,3 +35,21 @@ export const vacancy = z.object({
 });
 
 export type Vacancy = z.infer<typeof vacancy>;
+
+export type GetVacancy = {
+    id: number;
+    job_title: string;
+    specialization: string;
+    city: string;
+    hiring_plan: number;
+    work_format: string;
+    salary_min: number;
+    salary_max: number;
+    experience: string;
+    required_skills: Record<string, any>;
+    job_description: string;
+    responsibilities: Record<string, any>;
+    requirements: Record<string, any>;
+    conditions: Record<string, any>;
+}
+
