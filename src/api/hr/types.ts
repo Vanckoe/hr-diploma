@@ -51,5 +51,5 @@ export type GetVacancy = {
     responsibilities: Record<string, any>;
     requirements: Record<string, any>;
     conditions: Record<string, any>;
-}
-
+    company_name?: string;
+};

@@ -1,31 +1,55 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Input from '@/components/ui/input';
 import RadioSelect from '@/components/ui/radioSelector';
 import Button from '@/components/ui/button';
+import { z } from 'zod';
 
-interface StepOneProps {
-    data: {
-        fullName: string;
-        positionWant: string;
-        specialization: string;
-        workFormat: string;
-        trips: string;
-        salaryFrom: string;
-        salaryTo: string;
-        experience: string;
-    };
-    onUpdate: (newData: Partial<StepOneProps['data']>) => void;
-    onNext: () => void;
+interface StepOneData {
+    full_name: string;
+    position: string;
+    specialization: string;
 }
 
-const StepOne: React.FC<StepOneProps> = ({ data, onUpdate, onNext }) => {
-    const workFormats = ['На месте работодателя', 'Удаленно', 'Гибрид', 'Разъездной'] as const;
-    const exp = ['Нет опыта', 'От 1 года до 3-х лет', 'От 3 до 6 лет', 'От 6 лет'] as const;
-    const trip = ['Да', 'Нет', 'Да, но не часто', 'Да, но не далекие страны'] as const;
+const stepOneSchema = z.object({
+    full_name: z.string().min(1, 'ФИО обязательно для заполнения'),
+    position: z.string().min(1, 'Должность обязательна для заполнения'),
+    specialization: z.string().min(1, 'Специализация обязательна для заполнения'),
+});
 
-    const handleInputChange = (field: keyof StepOneProps['data'], value: string) => {
-        onUpdate({ [field]: value });
+interface StepOneProps {
+    onNext: (data: StepOneData) => void;
+}
+
+const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
+    const [formData, setFormData] = useState<StepOneData>({
+        full_name: '',
+        position: '',
+        specialization: '',
+    });
+
+    const [errors, setErrors] = useState<Partial<Record<keyof StepOneData, string>>>({});
+
+    const handleInputChange = (field: keyof StepOneData, value: string) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSubmit = () => {
+        try {
+            const validatedData = stepOneSchema.parse(formData);
+            console.log('Валидация пройдена:', validatedData);
+            onNext(validatedData);
+        } catch (error) {
+            if (error instanceof Error) {
+                const zodError = JSON.parse(error.message);
+                const newErrors: Partial<Record<keyof StepOneData, string>> = {};
+                zodError.forEach((err: any) => {
+                    newErrors[err.path[0] as keyof StepOneData] = err.message;
+                });
+                setErrors(newErrors);
+                console.error('Ошибки валидации:', newErrors);
+            }
+        }
     };
 
     return (
@@ -34,61 +58,32 @@ const StepOne: React.FC<StepOneProps> = ({ data, onUpdate, onNext }) => {
             <div className="flex w-3/4 flex-col gap-2 rounded-[10px] bg-white px-10 pb-6 pt-9">
                 <p className="text-base font-semibold">Введите ваше ФИО</p>
                 <Input
-                    placeholder="Введите ваше ФИО"
-                    value={data.fullName}
-                    onChange={(e) =>
-                        handleInputChange('fullName', (e.target as HTMLInputElement).value)
+                    placeholder="Введите ваше полное имя"
+                    value={formData.full_name}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange('full_name', e.target.value)
                     }
+                    error={errors.full_name}
                 />
-                <p className="mt-4 text-base font-semibold">Введите вашу должность / профессию</p>
+                <p className="mt-4 text-base font-semibold">Желаемая должность</p>
                 <Input
-                    placeholder="Введите вашу должность / профессию"
-                    value={data.positionWant}
-                    onChange={(e) =>
-                        handleInputChange('positionWant', (e.target as HTMLInputElement).value)
+                    placeholder="Введите желаемую должность"
+                    value={formData.position}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange('position', e.target.value)
                     }
+                    error={errors.position}
                 />
-                <p className="mt-4 text-base font-semibold">Ваша специализация</p>
+                <p className="mt-4 text-base font-semibold">Специализация</p>
                 <Input
-                    placeholder="Ваша специализация"
-                    value={data.specialization}
-                    onChange={(e) =>
-                        handleInputChange('specialization', (e.target as HTMLInputElement).value)
+                    placeholder="Укажите вашу специализацию"
+                    value={formData.specialization}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleInputChange('specialization', e.target.value)
                     }
+                    error={errors.specialization}
                 />
-                <RadioSelect
-                    label="Формат работы"
-                    options={[...workFormats]}
-                    onChange={(selected) => handleInputChange('workFormat', selected)}
-                />
-                <RadioSelect
-                    label="Готовы ли к командировкам?"
-                    options={[...trip]}
-                    onChange={(selected) => handleInputChange('trips', selected)}
-                />
-                <p className="mt-4 text-base font-semibold">Оплата в месяц (тг)</p>
-                <div className="mb-4 flex flex-row items-center gap-3">
-                    <Input
-                        placeholder="От"
-                        value={data.salaryFrom}
-                        onChange={(e) =>
-                            handleInputChange('salaryFrom', (e.target as HTMLInputElement).value)
-                        }
-                    />
-                    <Input
-                        placeholder="До"
-                        value={data.salaryTo}
-                        onChange={(e) =>
-                            handleInputChange('salaryTo', (e.target as HTMLInputElement).value)
-                        }
-                    />
-                </div>
-                <RadioSelect
-                    label="Опыт"
-                    options={[...exp]}
-                    onChange={(selected) => handleInputChange('experience', selected)}
-                />
-                <Button className="mt-5 w-fit px-20" onClick={onNext}>
+                <Button onClick={handleSubmit} className="mt-10 w-1/4 rounded-[10px]">
                     Продолжить
                 </Button>
             </div>

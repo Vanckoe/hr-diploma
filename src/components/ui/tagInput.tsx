@@ -8,6 +8,7 @@ interface TagInputProps {
     placeholder?: string;
     value?: string[];
     onChange?: (tags: string[]) => void;
+    error?: string;
 }
 
 const TagInput: React.FC<TagInputProps> = ({
@@ -15,6 +16,7 @@ const TagInput: React.FC<TagInputProps> = ({
     placeholder = 'Введите текст',
     value = [],
     onChange,
+    error,
 }) => {
     const [tags, setTags] = useState<string[]>(value);
     const [inputValue, setInputValue] = useState('');
@@ -73,6 +75,7 @@ const TagInput: React.FC<TagInputProps> = ({
                     className="flex-1 rounded-[10px] border border-[#E7E7E7] bg-white px-4 py-2 text-base outline-none focus:border-[#814BFF]"
                 />
             </div>
+            {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
     );
 };

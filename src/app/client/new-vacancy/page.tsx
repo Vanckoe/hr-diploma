@@ -3,97 +3,81 @@ import React, { useState } from 'react';
 import StepOne from './_components/stepOne';
 import StepTwo from './_components/stepTwo';
 import StepThree from './_components/stepThree';
-import { z } from 'zod';
-import { UserResume , userResume } from '@/api/post/types';
+import type { StepOneData, StepTwoData, StepThreeData } from './validation';
+import { userResume } from '@/api/client/types';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useResume } from '@/api/client/hooks';
 
-interface FormData {
-    fullName: string;
-    positionWant: string;
-    specialization: string;
-    workFormat: string;
-    trips: string;
-    salaryFrom: string;
-    salaryTo: string;
-    experience: string;
-    description: string;
-    university: string;
-    faculty: string;
-    graduationYear: string;
-    companyName: string;
-    position: string;
-    workDescription: string;
-}
-
-const NewVacancy: React.FC = () => {
+const NewResume = () => {
+    const router = useRouter();
+    const resumeMutation = useResume();
     const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
-    const [formData, setFormData] = useState<FormData>({
-        
-        fullName: '',
-        positionWant: '',
-        specialization: '',
-        workFormat: '',
-        trips: '',
-        salaryFrom: '',
-        salaryTo: '',
-        experience: '',
-        description: '',
-        university: '',
-        faculty: '',
-        graduationYear: '',
-        companyName: '',
-        position: '',
-        workDescription: '',
-    });
+    const [formData, setFormData] = useState<{
+        stepOne?: StepOneData;
+        stepTwo?: StepTwoData;
+        stepThree?: StepThreeData;
+    }>({});
 
-    const handleNextStep = () => {
-        if (currentStep < 3) setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3);
+    const handleStepOneComplete = (data: StepOneData) => {
+        setFormData((prev) => ({ ...prev, stepOne: data }));
+        setCurrentStep(2);
+    };
+
+    const handleStepTwoComplete = (data: StepTwoData) => {
+        setFormData((prev) => ({ ...prev, stepTwo: data }));
+        setCurrentStep(3);
     };
 
     const handlePrevStep = () => {
-        if (currentStep > 1) setCurrentStep((prev) => (prev - 1) as 1 | 2 | 3);
+        setCurrentStep((prev) => (prev - 1) as 1 | 2 | 3);
     };
-    const handleFinishStep = () => {
-        console.log(formData);
-    };
-    const updateFormData = (newData: Partial<FormData>) => {
-        setFormData((prev) => ({
-            ...prev,
-            ...newData,
-        }));
+
+    const handleSubmit = (data: StepThreeData) => {
+        if (!formData.stepOne || !formData.stepTwo) return;
+
+        const finalData = {
+            full_name: formData.stepOne.full_name,
+            position: formData.stepOne.position,
+            specialization: formData.stepOne.specialization,
+            work_format: formData.stepTwo.work_format,
+            ready_for_business_trips: formData.stepTwo.ready_for_business_trips,
+            expected_salary: formData.stepTwo.expected_salary,
+            experience: formData.stepTwo.experience,
+            skills: formData.stepTwo.skills,
+            photo: data.photo,
+            about: data.about,
+            languages: data.languages,
+            education: data.education,
+        };
+
+        try {
+            const validatedData = userResume.parse(finalData);
+            resumeMutation.mutate(validatedData, {
+                onSuccess: () => {
+                    toast.success('Резюме успешно создано');
+                    router.push('/client');
+                },
+                onError: (error) => {
+                    console.error('Ошибка при отправке резюме:', error);
+                    toast.error('Ошибка при создании резюме');
+                },
+            });
+        } catch (error) {
+            console.error('Ошибка валидации:', error);
+            toast.error('Ошибка при создании резюме');
+        }
     };
 
     return (
         <div>
-            {currentStep === 1 && (
-                <StepOne data={formData} onUpdate={updateFormData} onNext={handleNextStep} />
-            )}
+            {currentStep === 1 && <StepOne onNext={handleStepOneComplete} />}
             {currentStep === 2 && (
-                <StepTwo
-                    data={{
-                        description: formData.description,
-                        university: formData.university,
-                        faculty: formData.faculty,
-                        graduationYear: formData.graduationYear,
-                    }}
-                    onUpdate={updateFormData}
-                    onNext={handleNextStep}
-                    onBack={handlePrevStep}
-                />
+                <StepTwo onBack={handlePrevStep} onNext={handleStepTwoComplete} />
             )}
-            {currentStep === 3 && (
-                <StepThree
-                    data={{
-                        companyName: formData.companyName,
-                        position: formData.position,
-                        workDescription: formData.workDescription,
-                    }}
-                    onUpdate={updateFormData}
-                    onFinish={handleFinishStep}
-                    onBack={handlePrevStep}
-                />
-            )}
+            {currentStep === 3 && <StepThree onBack={handlePrevStep} onSubmit={handleSubmit} />}
         </div>
     );
 };
 
-export default NewVacancy;
+export default NewResume;

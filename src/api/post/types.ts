@@ -77,21 +77,3 @@ export const hrRegistration = z.object({
 });
 
 export type HrRegistrationin = z.infer<typeof hrRegistration>;
-
-export const userResume = z.object({
-    full_name: z.string().optional(),
-    position: z.string().optional(),
-    specialization: z.string().optional(),
-    work_format: z.string().optional(),
-    ready_for_business_trips: z.string().optional(),
-
-    expected_salary: z.string().optional(),
-    experience: z.string().optional(),
-    photo: z.string().optional(),
-    skills: z.string().optional(),
-    about: z.string().optional(),
-    languages: z.string().optional(),
-    education: z.string().optional(),
-});
-
-export type UserResume = z.infer<typeof userResume>;
