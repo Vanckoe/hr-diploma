@@ -63,16 +63,16 @@ const ChatMirror = () => {
                 const jsonString = line.replace(/^data: /, ''); // Remove 'data: ' prefix
 
                 try {
-                    const parsedData = JSON.parse(jsonString); // Parse the JSON string
-                    const botMessage = parsedData.message.content.parts[0]; // Extract the bot's message
+                    if (!jsonString.trim()) continue;
+                    const parsedData = JSON.parse(jsonString);
+                    if (!parsedData?.message?.content?.parts?.[0]) continue;
+                    const botMessage = parsedData.message.content.parts[0];
                     fullBotMessage = botMessage;
 
-                    // Update the chat with the accumulated bot response
                     setChat((prevChat) => {
                         const updatedChat = [...prevChat];
                         const lastIndex = updatedChat.length - 1;
 
-                        // If the last message is from the bot, update it, otherwise add a new bot message
                         if (updatedChat[lastIndex]?.role === 'bot') {
                             updatedChat[lastIndex].content = fullBotMessage;
                         } else {
@@ -85,7 +85,8 @@ const ChatMirror = () => {
                         return updatedChat;
                     });
                 } catch (err) {
-                    console.error('Error parsing JSON:', err);
+                    console.error('Error parsing JSON:', err, '\nJSON string:', jsonString);
+                    continue;
                 }
             }
         }
@@ -127,7 +128,7 @@ const ChatMirror = () => {
             )}
 
             {isOpen && (
-                <div className="fixed bottom-[30px]  right-[45px] z-50 hidden h-full max-h-[510px] w-full max-w-[340px] flex-col overflow-hidden rounded-lg bg-white shadow-2xl md:flex">
+                <div className="fixed bottom-[30px] right-[45px] z-50 hidden h-full max-h-[510px] w-full max-w-[340px] flex-col overflow-hidden rounded-lg bg-white shadow-2xl md:flex">
                     <div className="flex items-start justify-between bg-[#004FFF] p-5 text-white">
                         <div className="flex flex-row items-center gap-3">
                             <OpenBtm width="42" height="42" />
