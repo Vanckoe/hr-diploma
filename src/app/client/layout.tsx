@@ -1,5 +1,6 @@
 import React from 'react';
 import ClientHeader from '@/components/layout/client-header';
+import ChatMirror from '@/components/ui/chatMirror';
 
 export default function RootLayout({
     children,
@@ -12,6 +13,7 @@ export default function RootLayout({
                 <div className="flex w-full flex-col px-5 pb-12 md:px-12">
                     <ClientHeader />
                     {children}
+                    <ChatMirror/>
                 </div>
             </div>
         </div>
