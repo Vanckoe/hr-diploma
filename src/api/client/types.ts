@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
 export const userResume = z.object({
-    pk: z.number({
-        required_error: 'User ID is required',
-    }),
     full_name: z
         .string({
             required_error: 'Full name is required',

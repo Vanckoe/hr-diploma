@@ -23,8 +23,6 @@ export const getUserResume = async (): Promise<UserResume | null> => {
 
 export const createResume = async (data: UserResume): Promise<any> => {
     try {
-        const { id } = await getUser();
-        const resumeData = { ...data, pk: Number(id) };
 
         const response = await apiClient.request<any>('user/resume/', {
             method: 'POST',
@@ -32,7 +30,7 @@ export const createResume = async (data: UserResume): Promise<any> => {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getTokens().access}`,
             },
-            body: resumeData,
+            body: data,
         });
 
         return response.data;

@@ -17,7 +17,7 @@ export const stepOneSchema = z.object({
 });
 
 export const stepTwoSchema = z.object({
-    job_description: z.string().min(10, 'Описание должно содержать не менее 10 символов'),
+    job_description: z.string().min(1, 'Описание должно содержать не менее 1 символов'),
     responsibilities: z.string().min(1, 'Введите обязанности'),
     requirements: z.string().min(1, 'Введите требования'),
     conditions: z.string().min(1, 'Введите условия'),
