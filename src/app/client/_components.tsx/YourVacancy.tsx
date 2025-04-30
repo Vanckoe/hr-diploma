@@ -10,6 +10,7 @@ import type { GetVacancy } from '@/api/hr/types';
 
 const YourVacancy = () => {
     const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data: resume, isLoading: resumeLoading } = useQuery({
         queryKey: ['resume'],
         queryFn: getUserResume,
@@ -29,7 +30,7 @@ const YourVacancy = () => {
     }
 
     return (
-        <div className="flex-col flex gap-5">
+        <div className="flex flex-col gap-5">
             {vacancies && vacancies.length > 0 ? (
                 <div className="mt-4 grid grid-cols-3 gap-4 rounded-[10px] bg-[#F8F8F8] p-6">
                     {vacancies.map((vacancy) => (

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 export const stepOneSchema = z.object({
+    company: z.string().min(1, 'Введите название компании'),
+    vacancy_number: z.number().min(1, 'Введите номер вакансии'),
     job_title: z.string().min(1, 'Введите название должности'),
     specialization: z.string().min(1, 'Введите специализацию'),
     city: z.string().min(1, 'Введите город'),
