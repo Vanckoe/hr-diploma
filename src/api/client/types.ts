@@ -56,3 +56,20 @@ export const userResume = z.object({
 });
 
 export type UserResume = z.infer<typeof userResume>;
+
+
+export type UserResumeGet = {
+    id: number;
+    specialization: string;
+    work_format: string;
+    experience: string;
+    full_name: string;
+    position: string;
+    ready_for_business_trips: string;
+    expected_salary: number;
+    skills: string[];
+    languages: string[];
+    education: string[];
+    about?: string | undefined;
+    photo?: string | undefined;
+}
