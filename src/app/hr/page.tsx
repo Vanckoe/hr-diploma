@@ -1,16 +1,17 @@
+/* eslint-disable tailwindcss/no-custom-classname */
 import React from 'react';
 import VacanciesInfo from './_components/vacanciesInfo';
 import ActiveVacancies from './_components/activeVacancies';
 import Feedback from './_components/feedback';
-import Retained from './_components/retained';
+// import Retained from './_components/retained';
 
 const HrPage = () => {
     return (
-        <div className="flex flex-col gap-4 accent-color">
+        <div className="accent-color flex flex-col gap-4">
             <VacanciesInfo />
             <ActiveVacancies />
             <Feedback />
-            <Retained />
+            {/* <Retained /> */}
         </div>
     );
 };

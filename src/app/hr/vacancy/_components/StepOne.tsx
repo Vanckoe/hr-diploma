@@ -25,6 +25,8 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
         salary_max: 0,
         experience: 'Нет опыта',
         required_skills: [],
+        // company: '', // ← Добавь это
+        // vacancy_number: 0, // ← И это
     });
 
     const [errors, setErrors] = useState<Partial<Record<keyof StepOneData, string>>>({});
@@ -50,7 +52,7 @@ const StepOne: React.FC<StepOneProps> = ({ onNext }) => {
             if (error instanceof Error) {
                 const zodError = JSON.parse(error.message);
                 const newErrors: Partial<Record<keyof StepOneData, string>> = {};
-                zodError.forEach((err: any) => {
+                zodError.forEach((err: { path: string[]; message: string }) => {
                     newErrors[err.path[0] as keyof StepOneData] = err.message;
                 });
                 setErrors(newErrors);

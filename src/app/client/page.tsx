@@ -51,6 +51,7 @@ const ClientPage = () => {
                     />
                     {isLoading && <div className="mt-4 text-white">Загрузка...</div>}
                     {searchResults && searchResults.length > 0 && (
+                        
                         <div className="mt-4 max-h-60 w-full overflow-y-auto rounded-lg bg-white p-4">
                             {searchResults.map((vacancy) => (
                                 <div key={vacancy.id} className="mb-2 p-2 hover:bg-gray-100">

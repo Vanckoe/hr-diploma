@@ -31,7 +31,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onBack, onSubmit }) => {
             if (error instanceof Error) {
                 const zodError = JSON.parse(error.message);
                 const newErrors: Partial<Record<keyof StepTwoData, string>> = {};
-                zodError.forEach((err: any) => {
+                zodError.forEach((err: { path: string[]; message: string }) => {
                     if (err.path[0] && typeof err.path[0] === 'string') {
                         newErrors[err.path[0] as keyof StepTwoData] = err.message;
                     }
@@ -55,7 +55,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onBack, onSubmit }) => {
                     возраста, места жительства и иных обстоятельств, не связанных с деловыми
                     качествами и спецификой трудовой функции кандидата). Согласно п. 2 Ст. 6.
                     Трудового Кодекса РК от 23 ноября 2015 года № 414-V и п. 3-.2 Ст. 14 Закона РК
-                    от 23 июля 1999 года № 451-I "О средствах массовой информации".
+                    от 23 июля 1999 года № 451-I О средствах массовой информации.
                 </p>
                 <textarea
                     className="min-h-[150px] rounded-[10px] border border-gray-300 p-3"
