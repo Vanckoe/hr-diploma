@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from 'zod';
 
 export const vacancy = z.object({
@@ -35,6 +36,9 @@ export const vacancy = z.object({
 });
 
 export type Vacancy = z.infer<typeof vacancy>;
+export type Text = {
+    text: string;
+};
 
 export type GetVacancy = {
     id: number;
@@ -48,8 +52,8 @@ export type GetVacancy = {
     experience: string;
     required_skills: Record<string, any>;
     job_description: string;
-    responsibilities: Record<string, any>;
-    requirements: Record<string, any>;
-    conditions: Record<string, any>;
+    responsibilities: Text;
+    requirements: Text;
+    conditions: Text;
     company_name?: string;
 };

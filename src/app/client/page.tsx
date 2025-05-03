@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Input from '@/components/ui/input';
 import Search from '@/assets/icons/hr/Search';
@@ -11,6 +12,7 @@ import { GetVacancy } from '@/api/hr/types';
 import { debounce } from 'lodash';
 
 const ClientPage = () => {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
 
     const debouncedSetSearchQuery = useCallback(
@@ -54,7 +56,9 @@ const ClientPage = () => {
                         
                         <div className="mt-4 max-h-60 w-full overflow-y-auto rounded-lg bg-white p-4">
                             {searchResults.map((vacancy) => (
-                                <div key={vacancy.id} className="mb-2 p-2 hover:bg-gray-100">
+                                <div key={vacancy.id}
+                                onClick={() => router.push(`/client/${vacancy.id}`)}
+                                className="mb-2 p-2 hover:bg-gray-100">
                                     <h3 className="font-medium">{vacancy.job_title}</h3>
                                     <div className="flex justify-between">
                                         <p className="text-sm text-gray-600">

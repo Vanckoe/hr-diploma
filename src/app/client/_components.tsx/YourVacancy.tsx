@@ -39,7 +39,7 @@ const YourVacancy = () => {
                         {vacancies.map((vacancy) => (
                             <div
                                 key={vacancy.id}
-                                onClick={() => router.push(`/client/vacancy/${vacancy.id}`)}
+                                onClick={() => router.push(`/client/${vacancy.id}`)}
                                 className="flex cursor-pointer flex-col gap-2 rounded-lg bg-white p-4 shadow-sm transition hover:shadow-md"
                             >
                                 <h3 className="text-lg font-semibold">{vacancy.job_title}</h3>
