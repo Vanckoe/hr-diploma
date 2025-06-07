@@ -21,7 +21,7 @@ const Sidebar = () => {
                         icon={<Mail color="#814BFF" />}
                         text="Вакансии"
                     />
-                    <NavItem href="#!" icon={<User color="#814BFF" />} text="Кандидаты" />
+                    <NavItem href="/hr/candidates" icon={<User color="#814BFF" />} text="Кандидаты" />
                     <button 
                     onClick={() => {
                         removeHrTokens();
